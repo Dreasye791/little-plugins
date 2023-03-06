@@ -19,7 +19,7 @@ public Plugin myinfo =
 
 int			lastTime[MAXPLAYERS + 1], replayTime[MAXPLAYERS + 1];
 char		lastChat[MAXPLAYERS + 1][1024];
-Handle		replayTimer[MAXPLAYERS + 1];
+Handle		repactTimer[MAXPLAYERS + 1];
 
 native bool BaseComm_SetClientGag(int client, bool bState);
 native bool BaseComm_IsClientGagged(int client);
@@ -97,11 +97,11 @@ public Action removeRePlayTimeHandle(Handle timer, int userid)
  */
 public void createResetTimerTimer(int client)
 {
-	if (IsValidHandle(replayTimer[client]))
+	if (IsValidHandle(repactTimer[client]))
 	{
-		KillTimer(replayTimer[client]);
+		KillTimer(repactTimer[client]);
 	}
-	replayTimer[client] = CreateTimer(RESET_SECOND, removeRePlayTimeHandle, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+	repactTimer[client] = CreateTimer(RESET_SECOND, removeRePlayTimeHandle, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public bool checkClient(int client)
