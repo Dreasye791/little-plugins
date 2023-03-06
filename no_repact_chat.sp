@@ -18,7 +18,7 @@ public Plugin myinfo =
 #define RESET_SECOND 10.0
 
 int			lastTime[MAXPLAYERS + 1], replayTime[MAXPLAYERS + 1];
-char		lastChat[MAXPLAYERS][1024];
+char		lastChat[MAXPLAYERS + 1][1024];
 Handle		replayTimer[MAXPLAYERS + 1];
 
 native bool BaseComm_SetClientGag(int client, bool bState);
