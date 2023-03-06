@@ -17,7 +17,7 @@ public Plugin myinfo =
 #define GAG_SECOND	 10.0
 #define RESET_SECOND 10.0
 
-int			lastTime[MAXPLAYERS + 1], repactTime[MAXPLAYERS + 1];
+int			lastTime[MAXPLAYERS + 1], repactCount[MAXPLAYERS + 1];
 char		lastChat[MAXPLAYERS + 1][1024];
 Handle		repactTimer[MAXPLAYERS + 1];
 
@@ -51,14 +51,14 @@ public Action Command_Say(int client, const char[] command, any args)
 			{
 				return Plugin_Handled;
 			}
-			repactTime[client]++;
+			repactCount[client]++;
 			createResetTimerTimer(client);
-			if (repactTime[client] > REPACT_LIMIT)
+			if (repactCount[client] > REPACT_LIMIT)
 			{
 				PrintToChatAll("[GAG] %N 重复发言过多，暂时禁言.", client);
 				BaseComm_SetClientGag(client, true);
 				CreateTimer(GAG_SECOND, gagTimerHandle, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-				repactTime[client] = 0;
+				repactCount[client] = 0;
 				return Plugin_Handled;
 			}
 		}
@@ -87,7 +87,7 @@ public Action removeRePlayTimeHandle(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if (checkClient(client))
 	{
-		repactTime[client] = 0;
+		repactCount[client] = 0;
 	}
 	return Plugin_Continue;
 }
