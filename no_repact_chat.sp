@@ -20,8 +20,9 @@ public Plugin myinfo =
 #define RESET_SECOND	10.0
 
 int			lastTime[MAXPLAYERS + 1], repactCount[MAXPLAYERS + 1];
-char		lastChat[MAXPLAYERS + 1][MAX_CHAT_LENGTH];
+char		lastChat[MAXPLAYERS + 1][MAX_CHAT_LENGTH], logFile[MAX_CHAT_LENGTH];
 Handle		repactTimer[MAXPLAYERS + 1];
+char		logPath[PLATFORM_MAX_PATH] = "logs/no_repact_chat.log";
 
 native bool BaseComm_SetClientGag(int client, bool bState);
 native bool BaseComm_IsClientGagged(int client);
@@ -38,11 +39,13 @@ public void OnPluginStart()
 	AddCommandListener(Command_Say, "say");
 	AddCommandListener(Command_Say, "say2");
 	AddCommandListener(Command_Say, "say_team");
+
+	BuildPath(Path_SM, logFile, sizeof(logFile), logPath);
 }
 
 public Action Command_Say(int client, const char[] command, any args)
 {
-	char message[1024];
+	static char message[MAX_CHAT_LENGTH];
 	GetCmdArgString(message, sizeof(message));
 
 	if (StrEqual(lastChat[client], message))
@@ -62,6 +65,7 @@ public Action Command_Say(int client, const char[] command, any args)
 				// 因为换图后禁言状态会重置，所以不考虑换图后定时器失效的问题
 				CreateTimer(GAG_SECOND, gagHandle, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 				repactCount[client] = 0;
+				writeLog(client);
 				return Plugin_Handled;
 			}
 		}
@@ -74,7 +78,7 @@ public Action Command_Say(int client, const char[] command, any args)
 
 /**
  * 取消禁言
- * 
+ *
  */
 public Action gagHandle(Handle timer, int userid)
 {
@@ -111,4 +115,23 @@ public void createResetRepactTimer(int client)
 public bool checkClient(int client)
 {
 	return (!!client && IsClientConnected(client)) && IsClientInGame(client);
+}
+
+/**
+ * 写入日志
+ */
+void writeLog(int client)
+{
+	static char sSteam[64];
+	static char sName[MAX_NAME_LENGTH];
+
+	if (client && IsClientInGame(client))
+	{
+		GetClientAuthId(client, AuthId_Steam2, sSteam, sizeof(sSteam));
+		GetClientName(client, sName, sizeof(sName));
+		LogToFile(logFile, "%s(%s)因复读:“%s”被禁言", sName, sSteam, lastChat[client]);
+	}
+	else {
+		LogToFile(logFile, "记录日志时玩家已离线");
+	}
 }
