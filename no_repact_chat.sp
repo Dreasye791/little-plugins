@@ -12,13 +12,15 @@ public Plugin myinfo =
 	url			= ""
 };
 
-#define REPACT_RANGE 10
-#define REPACT_LIMIT 2
-#define GAG_SECOND	 10.0
-#define RESET_SECOND 10.0
+#define MAX_CHAT_LENGTH 1024
+
+#define REPACT_RANGE	10
+#define REPACT_LIMIT	2
+#define GAG_SECOND		60.0
+#define RESET_SECOND	10.0
 
 int			lastTime[MAXPLAYERS + 1], repactCount[MAXPLAYERS + 1];
-char		lastChat[MAXPLAYERS + 1][1024];
+char		lastChat[MAXPLAYERS + 1][MAX_CHAT_LENGTH];
 Handle		repactTimer[MAXPLAYERS + 1];
 
 native bool BaseComm_SetClientGag(int client, bool bState);
@@ -52,27 +54,29 @@ public Action Command_Say(int client, const char[] command, any args)
 				return Plugin_Handled;
 			}
 			repactCount[client]++;
-			createResetTimerTimer(client);
+			createResetRepactTimer(client);
 			if (repactCount[client] > REPACT_LIMIT)
 			{
 				PrintToChatAll("[GAG] %N 重复发言过多，暂时禁言.", client);
 				BaseComm_SetClientGag(client, true);
-				CreateTimer(GAG_SECOND, gagTimerHandle, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+				// 因为换图后禁言状态会重置，所以不考虑换图后定时器失效的问题
+				CreateTimer(GAG_SECOND, gagHandle, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 				repactCount[client] = 0;
 				return Plugin_Handled;
 			}
 		}
 	}
 
-	strcopy(lastChat[client], PLATFORM_MAX_PATH, message);
+	strcopy(lastChat[client], MAX_CHAT_LENGTH, message);
 	lastTime[client] = GetTime();
-	// char t[100];
-	// Format(t, 100, "最后发言时间：%i, %s...%s", lastTime[client], lastChat[client], message);
-	// PrintToServer(t);
 	return Plugin_Continue;
 }
 
-public Action gagTimerHandle(Handle timer, int userid)
+/**
+ * 取消禁言
+ * 
+ */
+public Action gagHandle(Handle timer, int userid)
 {
 	int client = GetClientOfUserId(userid);
 	if (checkClient(client))
@@ -82,7 +86,7 @@ public Action gagTimerHandle(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-public Action removeRePlayTimeHandle(Handle timer, int userid)
+public Action resetRepactCountHandle(Handle timer, int userid)
 {
 	int client = GetClientOfUserId(userid);
 	if (checkClient(client))
@@ -95,13 +99,13 @@ public Action removeRePlayTimeHandle(Handle timer, int userid)
 /**
  * 设置、重设复读计数器
  */
-public void createResetTimerTimer(int client)
+public void createResetRepactTimer(int client)
 {
 	if (IsValidHandle(repactTimer[client]))
 	{
 		KillTimer(repactTimer[client]);
 	}
-	repactTimer[client] = CreateTimer(RESET_SECOND, removeRePlayTimeHandle, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+	repactTimer[client] = CreateTimer(RESET_SECOND, resetRepactCountHandle, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public bool checkClient(int client)
