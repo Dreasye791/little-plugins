@@ -37,7 +37,6 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public void OnPluginStart()
 {
 	AddCommandListener(Command_Say, "say");
-	AddCommandListener(Command_Say, "say2");
 	AddCommandListener(Command_Say, "say_team");
 
 	BuildPath(Path_SM, logFile, sizeof(logFile), logPath);
