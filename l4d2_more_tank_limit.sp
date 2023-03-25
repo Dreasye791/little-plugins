@@ -10,7 +10,7 @@ public Plugin myinfo =
 	author		= "Dreasye",
 	description = "限制多坦克血量",
 	version		= "1.0",
-	url			= ""
+	url			= "https://github.com/Dreasye791/little-plugins/blob/master/l4d2_more_tank_limit.sp"
 };
 
 #define Z_TANK		   8
