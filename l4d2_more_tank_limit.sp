@@ -8,7 +8,7 @@ public Plugin myinfo =
 {
 	name		= "L4D2 1+ Tank Health Limit",
 	author		= "Dreasye",
-	description = "限制多坦克出生血量",
+	description = "限制多坦克血量",
 	version		= "1.0",
 	url			= ""
 };
