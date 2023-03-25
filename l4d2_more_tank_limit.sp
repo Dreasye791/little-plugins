@@ -29,7 +29,7 @@ public void OnPluginStart()
 {
 	HookEvent("tank_spawn", Event_TankSpawn, EventHookMode_Pre);
 	HookEvent("player_death", TankDeath);
-	tankCount = 0;
+	HookEvent("round_start", ClearData);
 }
 
 public void Event_TankSpawn(Event event, const char[] name, bool dontBroadcast)
@@ -59,6 +59,14 @@ public void TankDeath(Event event, const char[] name, bool dontBroadcast)
 		{
 			tankCount = 0;
 		}
+	}
+}
+
+public void ClearData(Event event, const char[] name, bool dontBroadcast){
+	tankCount = 0;
+	for(int i = 0; i <= sizeof(tankClients); i++)
+	{
+		tankClients[i] = NOT_A_TANK;
 	}
 }
 
