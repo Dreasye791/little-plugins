@@ -10,7 +10,7 @@ public Plugin myinfo =
 	author		= "dreasye",
 	description = "在进图离开安全室前和到达终点安全室后，可无限使用医疗包",
 	version		= "1.0",
-	url			= "URL"
+	url			= "https://github.com/Dreasye791/little-plugins/blob/master/heal_Infinite.sp"
 };
 
 public void OnPluginStart()
