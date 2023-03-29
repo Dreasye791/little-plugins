@@ -8,7 +8,7 @@ public Plugin myinfo =
 {
 	name		= "安全后医疗包无限使用",
 	author		= "dreasye",
-	description = "在离开安全区域室前和到达终点后，可无限使用医疗包",
+	description = "在离开安全区域前和到达终点后，可无限使用医疗包",
 	version		= "1.0",
 	url			= "https://github.com/Dreasye791/little-plugins/blob/master/heal_Infinite.sp"
 };
