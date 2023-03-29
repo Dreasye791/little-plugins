@@ -1,6 +1,7 @@
 # little-plugins
 ## 禁止频繁的复读(no_repact_chat)
 因为3月初服务器经常见到麦片哥，所以写了这个小插件
+
 频繁地复读自己的发言会被禁言
 
 ## 坦克数量限制(l4d2_more_tank_limit)
