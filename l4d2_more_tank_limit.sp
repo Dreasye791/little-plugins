@@ -3,6 +3,7 @@
 
 #include <sourcemod>
 #include <sdktools>
+#include <left4dhooks>
 
 public Plugin myinfo =
 {
@@ -22,7 +23,6 @@ public Plugin myinfo =
 #define NOT_SET_HEALTH 0
 #define HAD_SET_HEALTH 1
 
-int tankCount;
 int tankClients[32] = { NOT_A_TANK, ... };
 
 public void OnPluginStart()
@@ -40,9 +40,8 @@ public void Event_TankSpawn(Event event, const char[] name, bool dontBroadcast)
 		return;
 	}
 	tankClients[client] = NOT_SET_HEALTH;
-	tankCount++;
 
-	if (tankCount > TANK_LIMIT)
+	if (L4D2_GetTankCount() > TANK_LIMIT)
 	{
 		RequestFrame(checkAllTankHealth);
 	}
@@ -54,16 +53,10 @@ public void TankDeath(Event event, const char[] name, bool dontBroadcast)
 	if (IsValidClient(client) && IsInfected(client) && IsTank(client))
 	{
 		tankClients[client] = NOT_A_TANK;
-		tankCount--;
-		if (tankCount < 0)
-		{
-			tankCount = 0;
-		}
 	}
 }
 
 public void ClearData(Event event, const char[] name, bool dontBroadcast){
-	tankCount = 0;
 	for(int i = 0; i <= sizeof(tankClients); i++)
 	{
 		tankClients[i] = NOT_A_TANK;
