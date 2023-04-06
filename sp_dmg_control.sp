@@ -5,7 +5,7 @@
 
 public Plugin myinfo =
 {
-	name		= "特感伤害控制",
+	name		= "Charger伤害控制",
 	author		= "dreasye",
 	description = "",
 	version		= "1.0",
@@ -65,7 +65,7 @@ public Action OnTakeChargerDamage(int victim, int &attacker, int &inflictor, flo
 {
 	if (IsValidClient(attacker) && IsCharger(attacker))
 	{
-		PrintToChatAll("此攻击伤害为 %f,type为 %i,验证伤害为 %f", damage, damageType, chargerCoopDamages[difficultyType]);
+		// PrintToChatAll("此攻击伤害为 %f,type为 %i,验证伤害为 %f", damage, damageType, chargerCoopDamages[difficultyType]);
 		if (damage == chargerCoopDamages[difficultyType])
 		{
 			damage = damage * difficultyMultiplier[difficultyType];
