@@ -27,7 +27,7 @@ int tankClients[32] = { NOT_A_TANK, ... };
 
 public void OnPluginStart()
 {
-	HookEvent("tank_spawn", Event_TankSpawn, EventHookMode_Pre);
+	HookEvent("tank_spawn", Event_TankSpawn, EventHookMode_Post);
 	HookEvent("player_death", TankDeath);
 	HookEvent("round_start", ClearData);
 }
@@ -40,8 +40,9 @@ public void Event_TankSpawn(Event event, const char[] name, bool dontBroadcast)
 		return;
 	}
 	tankClients[client] = NOT_SET_HEALTH;
-
-	if (L4D2_GetTankCount() > TANK_LIMIT)
+	// 导演系统在这时候还没有统计克数量,需要 +1 返回正确数量
+	int tankCount		= L4D2_GetTankCount() + 1;
+	if (tankCount > TANK_LIMIT)
 	{
 		RequestFrame(checkAllTankHealth);
 	}
@@ -56,8 +57,9 @@ public void TankDeath(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-public void ClearData(Event event, const char[] name, bool dontBroadcast){
-	for(int i = 0; i <= sizeof(tankClients); i++)
+public void ClearData(Event event, const char[] name, bool dontBroadcast)
+{
+	for (int i = 1; i < sizeof(tankClients); i++)
 	{
 		tankClients[i] = NOT_A_TANK;
 	}
@@ -83,7 +85,7 @@ public void setTankHealth(int client)
 
 public void checkAllTankHealth()
 {
-	for (int i = 0; i < sizeof(tankClients); i++)
+	for (int i = 1; i < sizeof(tankClients); i++)
 	{
 		if (tankClients[i] == NOT_SET_HEALTH)
 		{
